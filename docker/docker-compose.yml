@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  localstack:
+    image: localstack/localstack:3
+    container_name: localstack
+    ports:
+      - "4566:4566"  # endpoint unificado
+    environment:
+      - SERVICES=s3
+      - DEFAULT_REGION=us-east-1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - ./localstack_data:/var/lib/localstack
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  airflow-webserver:
+    image: apache/airflow:2.7.2
+    container_name: airflow-webserver
+    depends_on:
+      - postgres
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__FERNET_KEY=${FERNET_KEY}
+      - AIRFLOW__WEBSERVER__DEFAULT_USER=admin
+      - AIRFLOW__WEBSERVER__DEFAULT_PASSWORD=admin
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=admin
+      - AWS_DEFAULT_REGION=us-east-1
+      - AIRFLOW_CONN_AWS_DEFAULT=aws://admin:admin@?region_name=us-east-1&endpoint_url=http://localstack:4566
+      - AIRFLOW__PROVIDERS_AMAZON__ENDPOINT_URL_S3=http://localstack:4566
+    volumes:
+      - ../dags:/opt/airflow/dags
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "
+      airflow db migrate &&
+      airflow users create --username admin --password admin --firstname Dri --lastname User --role Admin --email none &&
+      airflow scheduler &
+      airflow webserver
+      "
+
+volumes:
+  postgres_data:
