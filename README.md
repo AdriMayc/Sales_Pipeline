@@ -45,19 +45,19 @@ docker-compose up -d
 
 Aqui são exibidos os dados originais extraídos do CSV, com as colunas completas.
 
-![Img1](./img/sales_data.png)
+<img width="1919" height="831" alt="img1" src="https://github.com/user-attachments/assets/9b2a7b35-64de-4fe0-9756-ad5374e1bb8d" />
 
 ### 2. Tabela: Dados Fato (fact_sales)
 
 Dados processados, incluindo o cálculo do total_price.
 
-![Img2](./img/fact_sales.png)
+<img width="1587" height="535" alt="img 2" src="https://github.com/user-attachments/assets/19413b29-611e-417e-9963-7001b2c98d7c" />
 
 ### 3. Gráfico: Análise Rápida
 
 Visualização gráfica que destaca a distribuição de vendas por país e outras métricas.
 
-![Img3](./img/analise_rapida.png)
+<img width="1557" height="814" alt="img3" src="https://github.com/user-attachments/assets/dd258f3b-7ce4-4184-8bd8-68c9a6187f4b" />
 
 ---
 
